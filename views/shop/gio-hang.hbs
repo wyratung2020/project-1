@@ -25,29 +25,31 @@
                     <tbody>
                         {{#each products}}
                         <tr>
-                            <form action="/update/{{this._id}}?_method=PUT" method="PUT">
+                            <form action="/update/{{this.item._id}}" method="POST">
                                 <td>
                                     <div class="media">
                                         <div class="d-flex">
-                                            <img width="150px" height=" 150px" src="{{this.imagePath}}" alt="">
+                                            <img width="150px" height=" 150px" src="{{this.item.imagePath}}" alt="">
                                         </div>
                                         <div class="media-body">
-                                            <p>{{this.title}}</p>
+                                            <p>{{this.item.title}}</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <h5>${{this.price}}</h5>
+                                    <h5>${{this.item.price}}</h5>
                                 </td>
                                 <td>
                                     <div class="product_count">
 
                                         <div class="quantity">
-                                            <input id="{{this._id}}" name="sl" type="number" size="1" min="1"
-                                                style="width: 50px; padding: 3px 6px" value="{{this.sl}}">
+                                            <input id="sl" name="sl" type="number" size="1" min="1"
+                                                max="{{this.item.sl}}" style="width: 50px; padding: 3px 6px"
+                                                value="{{this.sl}}">
                                         </div>
                                     </div>
                                 </td>
+
                                 <td>
                                     <h5>${{this.tien}}</h5>
                                 </td>
@@ -56,20 +58,17 @@
                                         <button class="btn btn-info  height-auto btn-sm updateCart dropdown-toggle"
                                             data-toggle="dropdown" type="button">Xóa <span
                                                 class="caret"></span></button>
-                                        {{!-- <form action="" method="GET"> --}}
-                                            <ul class="dropdown-menu">
-                                                <li><a href="/remove/{{this._id}}">Xóa 1</a></li>
-                                                <li><a href="/delcart/{{this._id}}">Xóa hết</a></li>
-                                            </ul>
-                                        {{!-- </form> --}}
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/remove/{{this.item._id}}">Xóa 1</a></li>
+                                            <li><a href="/delcart/{{this.item._id}}">Xóa hết</a></li>
+                                        </ul>
 
                                     </div>
                                 </td>
                                 <td>
                                     <button type="submit" class=" btn btn-info height-auto btn-sm updateCart">Cập
                                         nhật</button>
-                                    {{!-- <a href="/update/{{this.item._id}}"><img class="tooltip-test delCart" id=""
-                                            data-original-title="Remove" src="/img/remove.png" alt=""></a> --}}
+                                    <!--<a href="/update/{{this.item._id}}">Update</a>-->
                                 </td>
                             </form>
                         </tr>
