@@ -145,7 +145,10 @@
                         </a>
                         <ul class="sub-menu">
                             <li>
-                                <a class="" href="/admin/cart/danh-sach.html">Danh Sách</a>
+                                <a class="" href="/admin/cart/danh-sach.html">Danh sách chờ giao</a>
+                            </li>
+                            <li>
+                                <a class="" href="/admin/cart/danh-sach.html">Danh sách đã giao</a>
                             </li>
                         </ul>
                     </li>
@@ -259,7 +262,8 @@
     <!-- General section box modal start -->
     <script>
         var i = 1;
-        $("#example tbody tr").each(function () {
+        $("#example tbody tr").each(function ()
+        {
             $(this).find('td').eq(0).html(i)
             i++;
         });
