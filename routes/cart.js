@@ -10,11 +10,20 @@ router.get('/', isLoggedIn, function (req, res, next)
     res.redirect('/admin/cart/danh-sach.html', { layout: 'layout-admin' });
 });
 
-router.get('/danh-sach.html', isLoggedIn, function (req, res, next)
+router.get('/danh-sach-cho-giao.html', isLoggedIn, function (req, res, next)
 {
-    giohang.find().then(function (data)
+    giohang.find({ st: 0 }).then(function (data)
     {
-        res.render('admin/cart/danh-sach', { data: data, layout: 'layout-admin' });
+        res.render('admin/cart/danh-sach-cho-giao', { data: data, layout: 'layout-admin' });
+    });
+
+});
+
+router.get('/danh-sach-da-giao.html', isLoggedIn, function (req, res, next)
+{
+    giohang.find({ st: 1 }).then(function (data)
+    {
+        res.render('admin/cart/danh-sach-da-giao', { data: data, layout: 'layout-admin' });
     });
 
 });
