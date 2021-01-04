@@ -29,6 +29,12 @@
                             {{/if}}
                             <div class="row" style="padding-left: 50px;">
                                 <div>
+                                    <p><strong>Mã đơn hàng: </strong>{{pro._id}}</p>
+                                </div>
+                                <div>
+                                    <p><strong>Người đặt: </strong> TODO</p>
+                                </div>
+                                <div>
                                     <p><strong>Tên: </strong>{{pro.firstname}} {{pro.lastname}} </p>
                                 </div>
                                 <div>
@@ -61,7 +67,7 @@
                                         <tr>
                                             <td>1</td>
                                             <td>{{this.item.title}}</td>
-                                            <td><img src="/upload/{{this.item.imagePath}}" width="100px" alt="">
+                                            <td><img src="{{this.item.imagePath}}" width="100px" alt="">
                                             </td>
                                             <td>{{this.sl}}</td>
                                             <td>${{this.tien}}</td>

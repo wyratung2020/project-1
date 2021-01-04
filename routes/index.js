@@ -124,7 +124,8 @@ router.post('/thanh-toan', function (req, res)
         thanhpho: req.body.city,
         cart: data,
         st: 0,
-        Tien: Tong
+        Tien: Tong,
+        nguoidat: req.session.passport.user
     });
 
     for (const [id, value] of Object.entries(giohang.items))
