@@ -34,7 +34,7 @@ router.post('/', function (req, res)
 });
 
 //category
-router.get('/cate/:name.:id.html', function (req, res)
+router.get('/cate/:name.:id', function (req, res)
 {
     // var login  = req.session.user ? true : false
     Product.find({ cateId: req.params.id }, function (err, data)
@@ -47,7 +47,7 @@ router.get('/cate/:name.:id.html', function (req, res)
 });
 
 // tìm sản phẩm category
-router.post('/cate/:name.:id.html', function (req, res)
+router.post('/cate/:name.:id', function (req, res)
 {
     var find = req.body.find;
     Cate.find().then(function (cate)
@@ -61,7 +61,7 @@ router.post('/cate/:name.:id.html', function (req, res)
 });
 
 //trang category
-router.get('/san-pham.html', function (req, res)
+router.get('/san-pham', function (req, res)
 {
     Product.find().then(function (product)
     {
@@ -72,8 +72,63 @@ router.get('/san-pham.html', function (req, res)
     });
 });
 
+router.get('/san-pham/trang-:page', (req, res) => 
+{
+    Product.countDocuments((err, count) =>
+    {
+        let perPage = 9;
+        let maxPage = Math.ceil(count / perPage);
+        let page = req.params.page || 1;
+        if (page > maxPage)
+        {
+            res.redirect(`/san-pham/trang-${maxPage}`);
+            return;
+        }
+        else if (page < 1)
+        {
+            res.redirect(`/san-pham/trang-1`);
+            return;
+        }
+
+        let listPage = [];
+        if (maxPage <= 5)
+        {
+            for (let i = 1; i <= maxPage; i++)
+                listPage.push(i);
+        }
+        else 
+        {
+            if (page <= 3)
+            {
+                listPage = [1, 2, 3, 4, 5];
+            }
+            else if (page > Number(maxPage) - 3)
+            {
+                listPage = [Number(maxPage) - 4, Number(maxPage) - 3, Number(maxPage) - 2, Number(maxPage) - 1, Number(maxPage)];
+            }
+            else 
+            {
+                listPage = [Number(page) - 2, Number(page) - 1, Number(page), Number(page) + 1, Number(page) + 2];
+            }
+        }
+
+        Product
+            .find()
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .exec((err, products) =>
+            {
+                Cate.find().then((cate) =>
+                {
+                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, curPage: { [page]: false } });
+                })
+            });
+    });
+
+})
+
 // tìm sản phẩm category
-router.post('/san-pham.html', function (req, res)
+router.post('/san-pham', function (req, res)
 {
     var find = req.body.find;
     Cate.find().then(function (cate)
