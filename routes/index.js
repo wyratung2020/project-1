@@ -13,11 +13,13 @@ const perPage = 9;
 router.get('/', function (req, res, next)
 {
     // var login  = req.session.user ? true : false
-    Product.find().limit(6).then(function (product)
+    Product.find().sort({ sl: 'desc' }).limit(8).then((highlightProducts) =>
     {
-        res.render('shop/index', { products: product });
+        Product.find().sort({ sl: 'asc' }).limit(8).then((upcomingProducts) => 
+        {
+            res.render('shop/index', { highlightProducts: highlightProducts, upcomingProducts: upcomingProducts });
+        })
     });
-
 });
 
 // tìm sản phẩm index
