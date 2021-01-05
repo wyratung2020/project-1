@@ -21,18 +21,54 @@ router.get('/', function (req, res, next)
 });
 
 // tìm sản phẩm index
-router.post('/', function (req, res)
+router.post('/search', function (req, res)
 {
     var find = req.body.find;
-    Cate.find().then(function (cate)
-    {
-        Product.find({ title: { $regex: find } }, function (err, result)
-        {
-            console.log(result)
-            res.render('shop/san-pham', { product: result, cate: cate });
-        });
-    })
+    res.redirect(`/search=${find}/trang-1`);
 });
+
+router.get('/search=:input', (req, res) => 
+{
+    res.redirect(`/search=${req.params.input}/trang-1`);
+})
+
+router.get('/search=:input/trang-:page', (req, res) =>
+{
+    let input = req.params.input;
+
+    Product.countDocuments({ title: { $regex: input, $options: 'i' } }, (err, count) =>
+    {
+        let curPage = req.params.page || 1;
+        let maxPage = Math.ceil(count / perPage);
+
+        if (count === 0)
+        {
+            return res.render('shop/san-pham', { notFound: true });
+        }
+        if (curPage > maxPage)
+        {
+            return res.redirect(`/search=${input}/trang-${maxPage}`);
+        }
+        else if (curPage < 1)
+        {
+            return res.redirect(`/search=${input}/trang-1`);
+        }
+
+        let listPage = getListPage(curPage, maxPage);
+
+        Product
+            .find({ title: { $regex: input, $options: 'i' } })
+            .skip((perPage * curPage) - perPage)
+            .limit(perPage)
+            .exec((err, products) =>
+            {
+                Cate.find().then((cate) =>
+                {
+                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isSearchPage: true, url: { name: input } });
+                })
+            });
+    });
+})
 
 //category
 router.get('/cate/:name.:id', function (req, res)
@@ -52,6 +88,10 @@ router.get('/cate/:name.:id/trang-:page', function (req, res)
         let curPage = req.params.page || 1;
         let maxPage = Math.ceil(count / perPage);
 
+        if (count === 0)
+        {
+            return res.render('shop/san-pham', { notFound: true });
+        }
         if (curPage > maxPage)
         {
             res.redirect(`/cate/${name}.${id}/trang-${maxPage}`);
@@ -106,6 +146,10 @@ router.get('/san-pham/trang-:page', (req, res) =>
         let curPage = req.params.page || 1;
         let maxPage = Math.ceil(count / perPage);
 
+        if (count === 0)
+        {
+            return res.render('shop/san-pham', { notFound: true });
+        }
         if (curPage > maxPage)
         {
             res.redirect(`/san-pham/trang-${maxPage}`);
