@@ -1,8 +1,7 @@
-<h1 class="page-title">Giày AdiDas</h1
-<div class="page-header-adidas">
-    <div class="sober-container clearfix">
-        >           
-    </div>
+<h1 class="page-title">Giày AdiDas</h1 <div class="page-header-adidas">
+<div class="sober-container clearfix">
+    >
+</div>
 </div>
 
 
@@ -71,7 +70,7 @@
                         <div class="product-details">
                             <h6>{{this.title}}</h6>
                             <div class="price">
-                                <h6>${{this.price}}</h6>
+                                <h6>{{this.price}}VND</h6>
                             </div>
                             <div class="prd-bottom">
                                 <a href="/them-vao-gio-hang/{{this._id}}" class="social-info islogin">
@@ -96,7 +95,8 @@
 <script src="/js/jquery.js"></script>
 <script>
     var islogin = $('#islogin').val();
-    if (islogin === 'false') {
+    if (islogin === 'false')
+    {
         $('.islogin').attr('href', '../user/login');
     }
 </script>

@@ -6,6 +6,7 @@ var Cart = require('../models/cart');
 var Product = require('../models/product');
 var Cate = require('../models/cate');
 const { route } = require('./product');
+const perPage = 9;
 
 
 /* GET home page. */
@@ -36,13 +37,45 @@ router.post('/', function (req, res)
 //category
 router.get('/cate/:name.:id', function (req, res)
 {
-    // var login  = req.session.user ? true : false
-    Product.find({ cateId: req.params.id }, function (err, data)
+    let name = req.params.name;
+    let id = req.params.id;
+    res.redirect(`/cate/${name}.${id}/trang-1`);
+});
+
+router.get('/cate/:name.:id/trang-:page', function (req, res)
+{
+    let name = req.params.name;
+    let id = req.params.id;
+
+    Product.countDocuments({ cateId: req.params.id }, (err, count) =>
     {
-        Cate.find().then(function (cate)
+        let curPage = req.params.page || 1;
+        let maxPage = Math.ceil(count / perPage);
+
+        if (curPage > maxPage)
         {
-            res.render('shop/san-pham', { product: data, cate: cate });
-        });
+            res.redirect(`/cate/${name}.${id}/trang-${maxPage}`);
+            return;
+        }
+        else if (curPage < 1)
+        {
+            res.redirect(`/cate/${name}.${id}/trang-1`);
+            return;
+        }
+
+        let listPage = getListPage(curPage, maxPage);
+
+        Product
+            .find({ cateId: req.params.id })
+            .skip((perPage * curPage) - perPage)
+            .limit(perPage)
+            .exec((err, products) =>
+            {
+                Cate.find().then((cate) =>
+                {
+                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isCatePage: true, url: { name: name, id: id } });
+                })
+            });
     });
 });
 
@@ -63,64 +96,38 @@ router.post('/cate/:name.:id', function (req, res)
 //trang category
 router.get('/san-pham', function (req, res)
 {
-    Product.find().then(function (product)
-    {
-        Cate.find().then(function (cate)
-        {
-            res.render('shop/san-pham', { product: product, cate: cate });
-        });
-    });
+    res.redirect('/san-pham/trang-1');
 });
 
 router.get('/san-pham/trang-:page', (req, res) => 
 {
     Product.countDocuments((err, count) =>
     {
-        let perPage = 9;
+        let curPage = req.params.page || 1;
         let maxPage = Math.ceil(count / perPage);
-        let page = req.params.page || 1;
-        if (page > maxPage)
+
+        if (curPage > maxPage)
         {
             res.redirect(`/san-pham/trang-${maxPage}`);
             return;
         }
-        else if (page < 1)
+        else if (curPage < 1)
         {
             res.redirect(`/san-pham/trang-1`);
             return;
         }
 
-        let listPage = [];
-        if (maxPage <= 5)
-        {
-            for (let i = 1; i <= maxPage; i++)
-                listPage.push(i);
-        }
-        else 
-        {
-            if (page <= 3)
-            {
-                listPage = [1, 2, 3, 4, 5];
-            }
-            else if (page > Number(maxPage) - 3)
-            {
-                listPage = [Number(maxPage) - 4, Number(maxPage) - 3, Number(maxPage) - 2, Number(maxPage) - 1, Number(maxPage)];
-            }
-            else 
-            {
-                listPage = [Number(page) - 2, Number(page) - 1, Number(page), Number(page) + 1, Number(page) + 2];
-            }
-        }
+        let listPage = getListPage(curPage, maxPage);
 
         Product
             .find()
-            .skip((perPage * page) - perPage)
+            .skip((perPage * curPage) - perPage)
             .limit(perPage)
             .exec((err, products) =>
             {
                 Cate.find().then((cate) =>
                 {
-                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, curPage: { [page]: false } });
+                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isSPPage: true });
                 })
             });
     });
@@ -315,47 +322,77 @@ function isLoggedIn(req, res, next)
     res.redirect('/');
 }
 
-router.get('/nike.html', function (req, res, next)
+router.get('/nike', function (req, res, next)
 {
-    Product.find().then(function (product)
+    Cate.findOne({ tenkhongdau: 'nike' }).then((cate) => 
     {
-        Cate.find().then(function (cate)
+        console.log(cate);
+        Product.find({ cateId: cate._id }).then((product) =>
         {
-            res.render('shop/nike', { product: product, cate: cate });
-        });
+            res.render('shop/nike', { product: product });
+        })
     });
 })
 
-router.get('/vans.html', function (req, res, next)
+router.get('/vans', function (req, res, next)
 {
-    Product.find().then(function (product)
+    Cate.findOne({ tenkhongdau: 'vans' }).then((cate) => 
     {
-        Cate.find().then(function (cate)
+        console.log(cate);
+        Product.find({ cateId: cate._id }).then((product) =>
         {
-            res.render('shop/vans', { product: product, cate: cate });
-        });
+            res.render('shop/vans', { product: product });
+        })
     });
 })
 
-router.get('/converse.html', function (req, res, next)
+router.get('/converse', function (req, res, next)
 {
-    Product.find().then(function (product)
+    Cate.findOne({ tenkhongdau: 'converse' }).then((cate) => 
     {
-        Cate.find().then(function (cate)
+        console.log(cate);
+        Product.find({ cateId: cate._id }).then((product) =>
         {
-            res.render('shop/converse', { product: product, cate: cate });
-        });
+            res.render('shop/converse', { product: product });
+        })
     });
 })
 
-router.get('/adidas.html', function (req, res, next)
+router.get('/adidas', function (req, res, next)
 {
-    Product.find().then(function (product)
+    Cate.findOne({ tenkhongdau: 'adidas' }).then((cate) => 
     {
-        Cate.find().then(function (cate)
+        console.log(cate);
+        Product.find({ cateId: cate._id }).then((product) =>
         {
-            res.render('shop/adidas', { product: product, cate: cate });
-        });
+            res.render('shop/adidas', { product: product });
+        })
     });
 })
 
+function getListPage(curPage, maxPage)
+{
+    let listPage = [];
+    if (maxPage <= 5)
+    {
+        for (let i = 1; i <= maxPage; i++)
+            listPage.push(i);
+    }
+    else 
+    {
+        if (curPage <= 3)
+        {
+            listPage = [1, 2, 3, 4, 5];
+        }
+        else if (curPage > Number(maxPage) - 3)
+        {
+            listPage = [Number(maxPage) - 4, Number(maxPage) - 3, Number(maxPage) - 2, Number(maxPage) - 1, Number(maxPage)];
+        }
+        else 
+        {
+            listPage = [Number(curPage) - 2, Number(curPage) - 1, Number(curPage), Number(curPage) + 1, Number(curPage) + 2];
+        }
+    }
+
+    return listPage;
+}
