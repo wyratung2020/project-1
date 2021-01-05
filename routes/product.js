@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var multer = require('multer');
+const perPage = 20;
 
 //cấu hình đường dẫn file upload và tên file upload 
 var storage = multer.diskStorage({
@@ -26,14 +27,43 @@ router.get('/', isLoggedIn, function (req, res)
 
 router.get('/danh-sach', isLoggedIn, function (req, res)
 {
-    Product.find().then(function (pro)
-    {
-        res.render('admin/product/danh-sach', {
-            product: pro,
-            layout: 'layout-admin'
-        });
-    });
+    res.redirect('/admin/product/danh-sach/trang-1');
 });
+
+router.get('/danh-sach/trang-:page', (req, res) => 
+{
+    Product.countDocuments((err, count) =>
+    {
+        let curPage = req.params.page || 1;
+        let maxPage = Math.ceil(count / perPage);
+
+        if (count === 0)
+        {
+            return res.render('admin/product/danh-sach', { layout: 'layout-admin', notFound: true });
+        }
+        if (curPage > maxPage)
+        {
+            res.redirect(`/admin/product/danh-sach/trang-${maxPage}`);
+            return;
+        }
+        else if (curPage < 1)
+        {
+            res.redirect(`/admin/product/danh-sach/trang-1`);
+            return;
+        }
+
+        let listPage = getListPage(curPage, maxPage);
+
+        Product
+            .find()
+            .skip((perPage * curPage) - perPage)
+            .limit(perPage)
+            .exec((err, products) =>
+            {
+                res.render('admin/product/danh-sach', { layout: 'layout-admin', product: products, curPage: curPage, page: listPage, maxPage: maxPage, isSPPage: true });
+            });
+    });
+})
 
 //thêm sản phẩm
 router.get('/them-product', isLoggedIn, function (req, res)
@@ -165,22 +195,77 @@ router.get('/search=:input/trang-:page', (req, res) =>
 {
     let input = req.params.input;
 
-    Product.countDocuments({ title: { $regex: input, $options: 'i' } }, (err, count) =>
+    Product.findById(input, (err, result) =>
+    {
+        if (result == null)
+        {
+            Product.countDocuments({ title: { $regex: input, $options: 'i' } }, (err, titleCount) =>
+            {
+                if (titleCount === 0)
+                    return res.render('admin/product/danh-sach', { layout: 'layout-admin', notFound: true });
+
+                let curPage = req.params.page || 1;
+                let maxPage = Math.ceil(titleCount / perPage);
+
+                if (curPage > maxPage)
+                {
+                    return res.redirect(`/admin/product/search=${input}/trang-${maxPage}`);
+                }
+                else if (curPage < 1)
+                {
+                    return res.redirect(`/admin/product/search=${input}/trang-1`);
+                }
+
+                let listPage = getListPage(curPage, maxPage);
+
+                Product
+                    .find({ title: { $regex: input, $options: 'i' } })
+                    .skip((perPage * curPage) - perPage)
+                    .limit(perPage)
+                    .exec((err, products) =>
+                    {
+                        Cate.find().then((cate) =>
+                        {
+                            res.render('admin/product/danh-sach', { layout: 'layout-admin', product: products, curPage: curPage, page: listPage, maxPage: maxPage, isSearchPage: true, url: { name: input } });
+                        })
+                    });
+            });
+        }
+        else
+        {
+            let products = [result]
+            res.render('admin/product/danh-sach', { layout: 'layout-admin', product: products });
+        }
+    })
+
+    /*Product.countDocuments({ title: { $regex: input, $options: 'i' } }, (err, titleCount) =>
     {
         let curPage = req.params.page || 1;
-        let maxPage = Math.ceil(count / perPage);
+        let maxPage = Math.ceil(titleCount / perPage);
 
-        if (count === 0)
+        if (titleCount === 0)
         {
-            return res.render('shop/san-pham', { notFound: true });
+            Product.countDocuments({ _id: input }, (err, idCount) => 
+            {
+                console.log(idCount);
+                if (idCount === 0)
+                {
+                    console.log(1);
+                    return res.render('admin/product/danh-sach', { layout: 'layout-admin', notFound: true });
+                }
+
+
+
+            })
+
         }
         if (curPage > maxPage)
         {
-            return res.redirect(`/search=${input}/trang-${maxPage}`);
+            return res.redirect(`/admin/product/search=${input}/trang-${maxPage}`);
         }
         else if (curPage < 1)
         {
-            return res.redirect(`/search=${input}/trang-1`);
+            return res.redirect(`/admin/product/search=${input}/trang-1`);
         }
 
         let listPage = getListPage(curPage, maxPage);
@@ -196,7 +281,7 @@ router.get('/search=:input/trang-:page', (req, res) =>
                     res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isSearchPage: true, url: { name: input } });
                 })
             });
-    });
+    });*/
 })
 
 module.exports = router;
@@ -210,3 +295,30 @@ function isLoggedIn(req, res, next)
     } else
         res.redirect('/admin/login');
 };
+
+function getListPage(curPage, maxPage)
+{
+    let listPage = [];
+    if (maxPage <= 5)
+    {
+        for (let i = 1; i <= maxPage; i++)
+            listPage.push(i);
+    }
+    else 
+    {
+        if (curPage <= 3)
+        {
+            listPage = [1, 2, 3, 4, 5];
+        }
+        else if (curPage > Number(maxPage) - 3)
+        {
+            listPage = [Number(maxPage) - 4, Number(maxPage) - 3, Number(maxPage) - 2, Number(maxPage) - 1, Number(maxPage)];
+        }
+        else 
+        {
+            listPage = [Number(curPage) - 2, Number(curPage) - 1, Number(curPage), Number(curPage) + 1, Number(curPage) + 2];
+        }
+    }
+
+    return listPage;
+}

@@ -14,9 +14,11 @@
                     <header class="panel_header">
                         <h2 class="title pull-left">Tất Cả Sản Phẩm</h2>
                         <div class="actions panel_actions pull-right">
-                            <a class="box_toggle fa fa-chevron-down"></a>
-                            <a class="box_setting fa fa-cog" data-toggle="modal" href="#section-settings"></a>
-                            <a class="box_close fa fa-times"></a>
+
+                            <form action="/admin/product/search" method="POST" class="d-flex justify-content-between">
+                                <input type="text" class="form-control" id="find" name="find"
+                                    placeholder="Tìm bằng ID hoặc tên">
+                            </form>
                         </div>
                     </header>
                     <div class="content-body">
@@ -39,7 +41,11 @@
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
+                                        {{#if notFound}}
+                                        <strong>Không tìm thấy sản phẩm</strong>
+                                        {{/if}}
                                         {{# each product}}
 
                                         <tr>
@@ -48,8 +54,8 @@
                                             <td> <img src="{{this.imagePath}}" width="100px" alt=""></td>
 
                                             <td>
-                                                <a href="/admin/product/{{this._id}}/xoa-product.html">Xoá</a> |
-                                                <a href="/admin/product/{{this._id}}/sua-product.html">Sửa</a>
+                                                <a href="/admin/product/{{this._id}}/xoa-product">Xoá</a> |
+                                                <a href="/admin/product/{{this._id}}/sua-product">Sửa</a>
                                             </td>
 
                                         </tr>
@@ -58,6 +64,48 @@
                                 </table>
                                 <!-- ********************************************** -->
                             </div>
+                        </div>
+                        <div class="row">
+                            {{#if isSPPage}}
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="/admin/product/danh-sach/trang-1" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {{#each page}}
+                                    <li><a href="/admin/product/danh-sach/trang-{{this}}">{{this}}</a></li>
+                                    {{/each}}
+                                    <li>
+                                        <a href="/admin/product/danh-sach/trang-{{maxPage}}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            {{/if}}
+
+                            {{#if isSearchPage}}
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="/admin/product/search={{url.name}}/trang-1" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {{# each page}}
+                                    <li><a href="/admin/product/search={{../url.name}}/trang-{{this}}">{{this}}</a></li>
+                                    {{/each}}
+                                    <li>
+                                        <a href="/admin/product/search={{url.name}}/trang-{{maxPage}}"
+                                            aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            {{/if}}
                         </div>
                     </div>
                 </section>
