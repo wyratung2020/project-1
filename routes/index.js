@@ -6,43 +6,129 @@ var Cart = require('../models/cart');
 var Product = require('../models/product');
 var Cate = require('../models/cate');
 const { route } = require('./product');
+const perPage = 9;
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next)
+{
     // var login  = req.session.user ? true : false
-    Product.find().limit(6).then(function(product) {
-        res.render('shop/index', { products: product });
+    Product.find().sort({ sl: 'desc' }).limit(8).then((highlightProducts) =>
+    {
+        Product.find().sort({ sl: 'asc' }).limit(8).then((upcomingProducts) => 
+        {
+            res.render('shop/index', { highlightProducts: highlightProducts, upcomingProducts: upcomingProducts });
+        })
     });
-
 });
 
 // tìm sản phẩm index
-router.post('/', function(req, res) {
+router.post('/search', function (req, res)
+{
     var find = req.body.find;
-    Cate.find().then(function(cate) {
-        Product.find({ title: { $regex: find } }, function(err, result) {
-            console.log(result)
-            res.render('shop/san-pham', { product: result, cate: cate });
-        });
-    })
+    res.redirect(`/search=${find}/trang-1`);
 });
 
+router.get('/search=:input', (req, res) => 
+{
+    res.redirect(`/search=${req.params.input}/trang-1`);
+})
+
+router.get('/search=:input/trang-:page', (req, res) =>
+{
+    let input = req.params.input;
+
+    Product.countDocuments({ title: { $regex: input, $options: 'i' } }, (err, count) =>
+    {
+        let curPage = req.params.page || 1;
+        let maxPage = Math.ceil(count / perPage);
+
+        if (count === 0)
+        {
+            return res.render('shop/san-pham', { notFound: true });
+        }
+        if (curPage > maxPage)
+        {
+            return res.redirect(`/search=${input}/trang-${maxPage}`);
+        }
+        else if (curPage < 1)
+        {
+            return res.redirect(`/search=${input}/trang-1`);
+        }
+
+        let listPage = getListPage(curPage, maxPage);
+
+        Product
+            .find({ title: { $regex: input, $options: 'i' } })
+            .skip((perPage * curPage) - perPage)
+            .limit(perPage)
+            .exec((err, products) =>
+            {
+                Cate.find().then((cate) =>
+                {
+                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isSearchPage: true, url: { name: input } });
+                })
+            });
+    });
+})
+
 //category
-router.get('/cate/:name.:id.html', function(req, res) {
-    // var login  = req.session.user ? true : false
-    Product.find({ cateId: req.params.id }, function(err, data) {
-        Cate.find().then(function(cate) {
-            res.render('shop/san-pham', { product: data, cate: cate });
-        });
+router.get('/cate/:name.:id', function (req, res)
+{
+    let name = req.params.name;
+    let id = req.params.id;
+    res.redirect(`/cate/${name}.${id}/trang-1`);
+});
+
+router.get('/cate/:name.:id/trang-:page', function (req, res)
+{
+    let name = req.params.name;
+    let id = req.params.id;
+
+    Product.countDocuments({ cateId: req.params.id }, (err, count) =>
+    {
+        let curPage = req.params.page || 1;
+        let maxPage = Math.ceil(count / perPage);
+
+        if (count === 0)
+        {
+            return res.render('shop/san-pham', { notFound: true });
+        }
+        if (curPage > maxPage)
+        {
+            res.redirect(`/cate/${name}.${id}/trang-${maxPage}`);
+            return;
+        }
+        else if (curPage < 1)
+        {
+            res.redirect(`/cate/${name}.${id}/trang-1`);
+            return;
+        }
+
+        let listPage = getListPage(curPage, maxPage);
+
+        Product
+            .find({ cateId: req.params.id })
+            .skip((perPage * curPage) - perPage)
+            .limit(perPage)
+            .exec((err, products) =>
+            {
+                Cate.find().then((cate) =>
+                {
+                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isCatePage: true, url: { name: name, id: id } });
+                })
+            });
     });
 });
 
 // tìm sản phẩm category
-router.post('/cate/:name.:id.html', function(req, res) {
+router.post('/cate/:name.:id', function (req, res)
+{
     var find = req.body.find;
-    Cate.find().then(function(cate) {
-        Product.find({ title: { $regex: find } }, function(err, result) {
+    Cate.find().then(function (cate)
+    {
+        Product.find({ title: { $regex: find } }, function (err, result)
+        {
             res.render('shop/san-pham', { product: result, cate: cate });
 
         });
@@ -50,44 +136,89 @@ router.post('/cate/:name.:id.html', function(req, res) {
 });
 
 //trang category
-router.get('/san-pham.html', function(req, res) {
-    Product.find().then(function(product) {
-        Cate.find().then(function(cate) {
-            res.render('shop/san-pham', { product: product, cate: cate });
-        });
-    });
+router.get('/san-pham', function (req, res)
+{
+    res.redirect('/san-pham/trang-1');
 });
 
+router.get('/san-pham/trang-:page', (req, res) => 
+{
+    Product.countDocuments((err, count) =>
+    {
+        let curPage = req.params.page || 1;
+        let maxPage = Math.ceil(count / perPage);
+
+        if (count === 0)
+        {
+            return res.render('shop/san-pham', { notFound: true });
+        }
+        if (curPage > maxPage)
+        {
+            res.redirect(`/san-pham/trang-${maxPage}`);
+            return;
+        }
+        else if (curPage < 1)
+        {
+            res.redirect(`/san-pham/trang-1`);
+            return;
+        }
+
+        let listPage = getListPage(curPage, maxPage);
+
+        Product
+            .find()
+            .skip((perPage * curPage) - perPage)
+            .limit(perPage)
+            .exec((err, products) =>
+            {
+                Cate.find().then((cate) =>
+                {
+                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isSPPage: true });
+                })
+            });
+    });
+
+})
+
 // tìm sản phẩm category
-router.post('/san-pham.html', function(req, res) {
+router.post('/san-pham', function (req, res)
+{
     var find = req.body.find;
-    Cate.find().then(function(cate) {
-        Product.find({ title: { $regex: find } }, function(err, result) {
+    Cate.find().then(function (cate)
+    {
+        Product.find({ title: { $regex: find } }, function (err, result)
+        {
             res.render('shop/san-pham', { product: result, cate: cate });
         });
     });
 });
 
 //trang chi tiết sp
-router.get('/chi-tiet/:id', function(req, res) {
-    Product.findById(req.params.id).then(function(data) {
+router.get('/chi-tiet/:id', function (req, res)
+{
+    Product.findById(req.params.id).then(function (data)
+    {
         console.log(data);
         res.render('shop/chi-tiet', { products: data });
     });
 });
 
 // tìm sản phẩm chi tiết
-router.post('/chi-tiet/:id', function(req, res) {
+router.post('/chi-tiet/:id', function (req, res)
+{
     var find = req.body.find;
-    Cate.find().then(function(cate) {
-        Product.find({ title: { $regex: find } }, function(err, result) {
+    Cate.find().then(function (cate)
+    {
+        Product.find({ title: { $regex: find } }, function (err, result)
+        {
             res.render('shop/san-pham', { product: result, cate: cate });
         });
     });
 });
 
 //tiến hành thanh toán
-router.post('/thanh-toan', function(req, res) {
+router.post('/thanh-toan', function (req, res)
+{
     var giohang = new Cart(req.session.cart);
     var data = giohang.convertArray();
     var Tong = giohang.Tien;
@@ -101,18 +232,31 @@ router.post('/thanh-toan', function(req, res) {
         thanhpho: req.body.city,
         cart: data,
         st: 0,
-        Tien: Tong
+        Tien: Tong,
+        nguoidat: req.session.passport.user
     });
 
-    cart.save().then(function() {
+    for (const [id, value] of Object.entries(giohang.items))
+    {
+        Product.findById(id, async (err, result) =>
+        {
+            result.sl -= value.sl;
+            await result.save();
+        });
+    }
+
+    cart.save().then(function ()
+    {
         req.session.cart = { items: {} };
         res.render('shop/done', { products: data, Tong: Tong });
     });
 
 });
 
-router.get('/thanh-toan', function(req, res, next) {
-    if (!req.session.cart) {
+router.get('/thanh-toan', function (req, res, next)
+{
+    if (!req.session.cart)
+    {
         return res.render('shop/gio-hang', { products: null });
     }
     var cart = new Cart(req.session.cart);
@@ -120,23 +264,29 @@ router.get('/thanh-toan', function(req, res, next) {
 
 });
 
-// tìm sản phẩm thanh toán
-router.post('/thanh-toan', function(req, res) {
+/*// tìm sản phẩm thanh toán
+router.post('/thanh-toan', function (req, res)
+{
     var find = req.body.find;
-    Cate.find().then(function(cate) {
-        Product.find({ title: { $regex: find } }, function(err, result) {
+    Cate.find().then(function (cate)
+    {
+        Product.find({ title: { $regex: find } }, function (err, result)
+        {
             res.render('shop/san-pham', { product: result, cate: cate });
         });
     });
-});
+});*/
 
 //thêm vào giỏ hàng
-router.get('/them-vao-gio-hang/:id', function(req, res, next) {
+router.get('/them-vao-gio-hang/:id', function (req, res, next)
+{
     var productId = req.params.id;
     var cart = new Cart((req.session.cart) ? req.session.cart : {});
 
-    Product.findById(productId, function(err, product) {
-        if (err) {
+    Product.findById(productId, function (err, product)
+    {
+        if (err)
+        {
             return res.redirect('/');
         }
         cart.add(product, product.id);
@@ -146,8 +296,10 @@ router.get('/them-vao-gio-hang/:id', function(req, res, next) {
     });
 });
 
-router.get('/gio-hang', function(req, res, next) {
-    if (!req.session.cart) {
+router.get('/gio-hang', function (req, res, next)
+{
+    if (!req.session.cart)
+    {
         return res.render('shop/gio-hang', { products: null });
     }
     var cart = new Cart(req.session.cart);
@@ -157,17 +309,21 @@ router.get('/gio-hang', function(req, res, next) {
 });
 
 // tìm sản phẩm giỏ hàng
-router.post('/gio-hang', function(req, res) {
+router.post('/gio-hang', function (req, res)
+{
     var find = req.body.find;
-    Cate.find().then(function(cate) {
-        Product.find({ title: { $regex: find } }, function(err, result) {
+    Cate.find().then(function (cate)
+    {
+        Product.find({ title: { $regex: find } }, function (err, result)
+        {
             res.render('shop/san-pham', { product: result, cate: cate });
         });
     });
 });
 
 //del 1 product
-router.get('/remove/:id', function(req, res) {
+router.get('/remove/:id', function (req, res)
+{
     var productId = req.params.id;
     var giohang = new Cart((req.session.cart) ? req.session.cart : {});
 
@@ -177,7 +333,8 @@ router.get('/remove/:id', function(req, res) {
 });
 
 //del product
-router.get('/delcart/:id', function(req, res) {
+router.get('/delcart/:id', function (req, res)
+{
     var productId = req.params.id;
     var giohang = new Cart((req.session.cart) ? req.session.cart : {});
 
@@ -187,7 +344,8 @@ router.get('/delcart/:id', function(req, res) {
 });
 
 //update sp
-router.put('/update/:id', function(req, res) {
+router.post('/update/:id', function (req, res)
+{
     var productId = req.params.id;
     var sl = req.body.sl;
     var giohang = new Cart((req.session.cart) ? req.session.cart : {});
@@ -201,52 +359,86 @@ router.put('/update/:id', function(req, res) {
 
 module.exports = router;
 
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
+function isLoggedIn(req, res, next)
+{
+    if (req.isAuthenticated())
+    {
         return next();
     }
     res.redirect('/');
 }
 
-router.get('/nike.html', function(req, res, next) {
-    Product.find().then(function(product) {
-        Cate.find().then(function(cate) {
-            res.render('shop/nike', { product: product, cate: cate });
-        });
+router.get('/nike', function (req, res, next)
+{
+    Cate.findOne({ tenkhongdau: 'nike' }).then((cate) => 
+    {
+        console.log(cate);
+        Product.find({ cateId: cate._id }).then((product) =>
+        {
+            res.render('shop/nike', { product: product });
+        })
     });
 })
 
-router.get('/vans.html', function(req, res, next) {
-    Product.find().then(function(product) {
-        Cate.find().then(function(cate) {
-            res.render('shop/vans', { product: product, cate: cate });
-        });
+router.get('/vans', function (req, res, next)
+{
+    Cate.findOne({ tenkhongdau: 'vans' }).then((cate) => 
+    {
+        console.log(cate);
+        Product.find({ cateId: cate._id }).then((product) =>
+        {
+            res.render('shop/vans', { product: product });
+        })
     });
 })
 
-router.get('/converse.html', function(req, res, next) {
-    Product.find().then(function(product) {
-        Cate.find().then(function(cate) {
-            res.render('shop/converse', { product: product, cate: cate });
-        });
+router.get('/converse', function (req, res, next)
+{
+    Cate.findOne({ tenkhongdau: 'converse' }).then((cate) => 
+    {
+        console.log(cate);
+        Product.find({ cateId: cate._id }).then((product) =>
+        {
+            res.render('shop/converse', { product: product });
+        })
     });
 })
 
-router.get('/adidas.html', function(req, res, next) {
-    Product.find().then(function(product) {
-        Cate.find().then(function(cate) {
-            res.render('shop/adidas', { product: product, cate: cate });
-        });
+router.get('/adidas', function (req, res, next)
+{
+    Cate.findOne({ tenkhongdau: 'adidas' }).then((cate) => 
+    {
+        console.log(cate);
+        Product.find({ cateId: cate._id }).then((product) =>
+        {
+            res.render('shop/adidas', { product: product });
+        })
     });
 })
 
-router.post('/update/:id', function(req, res) {
-    var productId = req.params.id;
-    var sl = req.body.sl;
-    var giohang = new Cart((req.session.cart) ? req.session.cart : {});
+function getListPage(curPage, maxPage)
+{
+    let listPage = [];
+    if (maxPage <= 5)
+    {
+        for (let i = 1; i <= maxPage; i++)
+            listPage.push(i);
+    }
+    else 
+    {
+        if (curPage <= 3)
+        {
+            listPage = [1, 2, 3, 4, 5];
+        }
+        else if (curPage > Number(maxPage) - 3)
+        {
+            listPage = [Number(maxPage) - 4, Number(maxPage) - 3, Number(maxPage) - 2, Number(maxPage) - 1, Number(maxPage)];
+        }
+        else 
+        {
+            listPage = [Number(curPage) - 2, Number(curPage) - 1, Number(curPage), Number(curPage) + 1, Number(curPage) + 2];
+        }
+    }
 
-    giohang.updateCart(productId, sl);
-    req.session.cart = giohang;
-    var data = giohang.convertArray();
-    res.render('shop/gio-hang', { product: data, Tien: giohang.Tien });
-})
+    return listPage;
+}

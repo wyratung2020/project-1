@@ -1,0 +1,46 @@
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Danh sách đơn hàng chờ giao</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="col-xs-12">
+        <!-- ********************************************** -->
+        <table id="example" class="display table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Mã đơn hàng</th>
+                    <th>Mã người đặt</th>
+                    <th>Tên</th>
+                    <th></th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{# each data}}
+                <tr>
+
+                    <td>1</td>
+                    <td>{{this._id}}</td>
+                    <td>{{this.nguoidat}}</td>
+                    <td>{{this.firstname}} {{this.lastname}}</td>
+                    <td>
+
+                    </td>
+
+                    <td>
+                        <a href="/user/don-hang/chi-tiet/{{this._id}}">Xem</a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <!-- ********************************************** -->
+    </div>
+</div>

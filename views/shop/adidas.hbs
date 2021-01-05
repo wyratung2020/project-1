@@ -1,8 +1,7 @@
-<h1 class="page-title">Giày AdiDas</h1
-<div class="page-header-adidas">
-    <div class="sober-container clearfix">
-        >           
-    </div>
+<h1 class="page-title">Giày AdiDas</h1 <div class="page-header-adidas">
+<div class="sober-container clearfix">
+    >
+</div>
 </div>
 
 
@@ -14,19 +13,19 @@
             </span>
             <span type="button" class="btn tes nav-item">
                 <img src="../img/banner/nike.png" alt="Adidas">
-                <a href="./nike.html" class="nav-link">NiKe</a>
+                <a href="./nike" class="nav-link">NiKe</a>
             </span>
             <span type="button" class="btn tes">
                 <img src="../img/banner/converse.png" alt="Converse">
-                <a href="./converse.html" class="nav-link">Converse</a>
+                <a href="./converse" class="nav-link">Converse</a>
             </span>
             <span type="button" class="btn tes">
                 <img src="../img/banner/adidas.png" alt="Adidas">
-                <a href="./adidas.html" class="nav-link">AdiDas</a>
+                <a href="./adidas" class="nav-link">AdiDas</a>
             </span>
             <span type="button" class="btn tes">
                 <img src="../img/banner/vans.png" alt="VANS">
-                <a href="./vans.html" class="nav-link">VANS</a>
+                <a href="./vans" class="nav-link">VANS</a>
             </span>
         </div>
     </div>
@@ -48,7 +47,7 @@
             <ul class="main-categories">
                 {{# each cate}}
                 <li class="main-nav-list">
-                    <a href="/cate/{{this.tenkhongdau}}.{{this._id}}.html" aria-expanded="true"
+                    <a href="/cate/{{this.tenkhongdau}}.{{this._id}}" aria-expanded="true"
                         aria-controls="fruitsVegetable"> {{this.ten}}</a>
                     {{/each}}
                 </li>
@@ -71,7 +70,7 @@
                         <div class="product-details">
                             <h6>{{this.title}}</h6>
                             <div class="price">
-                                <h6>${{this.price}}</h6>
+                                <h6>{{this.price}}VND</h6>
                             </div>
                             <div class="prd-bottom">
                                 <a href="/them-vao-gio-hang/{{this._id}}" class="social-info islogin">
@@ -96,7 +95,8 @@
 <script src="/js/jquery.js"></script>
 <script>
     var islogin = $('#islogin').val();
-    if (islogin === 'false') {
-        $('.islogin').attr('href', '../user/login');
+    if (islogin === 'false')
+    {
+        $('.islogin').attr('href', '/user/login');
     }
 </script>

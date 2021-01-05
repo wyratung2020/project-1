@@ -4,18 +4,21 @@ var passport = require('passport');
 
 
 
-router.get('/', isLoggedIn, function (req, res, next) {
-  res.render('admin/main/index', { layout: false });
+router.get('/', isLoggedIn, function (req, res, next)
+{
+  res.render('admin/main/index', { layout: 'layout-admin' });
 });
 
-router.get('/logout', isLoggedIn, function (req, res, next) {
+router.get('/logout', isLoggedIn, function (req, res, next)
+{
   req.logout();
   res.redirect('/admin/login');
 });
 
 
 
-router.get('/login', notisLoggedIn, function (req, res, next) {
+router.get('/login', notisLoggedIn, function (req, res, next)
+{
   var messages = req.flash('error');
   res.render('admin/login/login_ad', {
     messages: messages, hasErrors: messages.length > 0,
@@ -33,20 +36,27 @@ router.post('/login', passport.authenticate('local.login_ad', {
 module.exports = router;
 
 // Hàm được sử dụng để kiểm tra đã login hay chưa
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated() && req.user.roles === 'ADMIN') {
+function isLoggedIn(req, res, next)
+{
+  if (req.isAuthenticated() && req.user.roles === 'ADMIN')
+  {
     return next();
   } else
     res.redirect('/');
 };
 
-function notisLoggedIn(req, res, next) {
-  if (!req.isAuthenticated()) {
+function notisLoggedIn(req, res, next)
+{
+  if (!req.isAuthenticated())
+  {
     return next();
-  } else {
-    if (req.isAuthenticated() && req.user.roles !== 'ADMIN') {
+  } else
+  {
+    if (req.isAuthenticated() && req.user.roles !== 'ADMIN')
+    {
       return next();
-    } else {
+    } else
+    {
       res.redirect('/admin');
     }
   }

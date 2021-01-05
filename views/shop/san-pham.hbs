@@ -12,93 +12,130 @@
 	</section>
 
 	<!-- End Banner Area -->
-	<nav class="">
-		<div class="row">
-			<div class="menu">
-				<span type="button" class="btn tes">
-					<a href="" class="">Danh Mục</a>
-				</span>
-				<span type="button" class="btn tes nav-item">
-					<img src="../img/banner/nike.png" alt="Adidas">
-					<a href="./nike.html" class="nav-link">NiKe</a>
-				</span>
-				<span type="button" class="btn tes">
-					<img src="../img/banner/converse.png" alt="Converse">
-					<a href="./converse.html" class="nav-link">Converse</a>
-				</span>
-				<span type="button" class="btn tes">
-					<img src="../img/banner/adidas.png" alt="Adidas">
-					<a href="./adidas.html" class="nav-link">AdiDas</a>
-				</span>
-				<span type="button" class="btn tes">
-					<img src="../img/banner/vans.png" alt="VANS">
-					<a href="./vans.html" class="nav-link">VANS</a>
-				</span>
-			</div>
-		</div>
-	</nav>
 
 	<div class="container">
 		<div class="row">
-			<div class="">
-				{{!-- <div class="sidebar-categories">
-					<button>
-						<a class="sidebar-categories" href="#">Danh mục</a>
-				</div> --}}
-
-				<ul class="main-categories">
-					{{# each cate}}
-					<li class="main-nav-list">
-						<a href="/cate/{{this.tenkhongdau}}.{{this._id}}.html" aria-expanded="true"
-							aria-controls="fruitsVegetable"> {{this.ten}}</a>
-						{{/each}}
-					</li>
-				</ul>
+			<div class="col-xl-3 col-lg-4 col-md-5">
+				<div class="sidebar-categories">
+					<div class="head">Danh mục</div>
+					<ul class="main-categories">
+						{{# each cate}}
+						<li class="main-nav-list">
+							<a href="/cate/{{this.tenkhongdau}}.{{this._id}}" aria-expanded="true"
+								aria-controls="fruitsVegetable"> {{this.ten}}</a>
+							{{/each}}
+						</li>
+					</ul>
+				</div>
 			</div>
-		</div>
-		<div class="row gx-3 gy-2 align-items-center">
-			<!-- Start Filter Bar -->
-
-			<!-- End Filter Bar -->
-			<!-- Start Best Seller -->
-			<input type="hidden" value="{{login}}" id="islogin">
-			<section class="lattest-product-area pb-40 category-list">
-				<div class="row">
-					{{# each product}}
-					<!-- single product -->
-					<div class="col-lg-4 col-md-6">
-						<div class="single-product">
-							<img class="img-fluid" src="{{this.imagePath}}" alt="">
-							<div class="product-details">
-								<h6>{{this.title}}</h6>
-								<div class="price">
-									<h6>${{this.price}}</h6>
-								</div>
-								<div class="prd-bottom">
-									<a href="/them-vao-gio-hang/{{this._id}}" class="social-info islogin">
-										<span class="ti-bag"></span>
-										<p class="hover-text">Thêm vào giỏ </p>
-									</a>
-									<a href="/chi-tiet/{{this._id}}" class="social-info">
-										<span class="lnr lnr-move"></span>
-										<p class="hover-text">Xem chi tiết</p>
-									</a>
+			<div class="col-xl-9 col-lg-8 col-md-7">
+				<!-- Start Filter Bar -->
+				{{#if notFound}}
+				<strong>Không tìm thấy sản phẩm</strong>
+				{{/if}}
+				<!-- End Filter Bar -->
+				<!-- Start Best Seller -->
+				<input type="hidden" value="{{login}}" id="islogin">
+				<section class="lattest-product-area pb-40 category-list">
+					<div class="row">
+						{{# each product}}
+						<!-- single product -->
+						<div class="col-lg-4 col-md-6">
+							<div class="single-product">
+								<img class="img-fluid" src="{{this.imagePath}}" alt="">
+								<div class="product-details">
+									<h6>{{this.title}}</h6>
+									<div class="price">
+										<h6>{{this.price}}VND</h6>
+									</div>
+									<div class="prd-bottom">
+										<a href="/them-vao-gio-hang/{{this._id}}" class="social-info islogin">
+											<span class="ti-bag"></span>
+											<p class="hover-text">Thêm vào giỏ </p>
+										</a>
+										<a href="/chi-tiet/{{this._id}}" class="social-info">
+											<span class="lnr lnr-move"></span>
+											<p class="hover-text">Xem chi tiết</p>
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
+						{{/each}}
 					</div>
-					{{/each}}
-				</div>
-			</section>
-			<!-- End Best Seller -->
+
+					<!-- Pagination -->
+					<div class="row">
+						{{#if isSPPage}}
+						<nav aria-label="Page navigation">
+							<ul class="pagination">
+								<li>
+									<a href="/san-pham/trang-1" aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								{{# each page}}
+								<li><a href="/san-pham/trang-{{this}}">{{this}}</a></li>
+								{{/each}}
+								<li>
+									<a href="/san-pham/trang-{{maxPage}}" aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+						{{/if}}
+
+						{{#if isCatePage}}
+						<nav aria-label="Page navigation">
+							<ul class="pagination">
+								<li>
+									<a href="/cate/{{url.name}}.{{url.id}}/trang-1" aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								{{# each page}}
+								<li><a href="/cate/{{../url.name}}.{{../url.id}}/trang-{{this}}">{{this}}</a></li>
+								{{/each}}
+								<li>
+									<a href="/cate/{{url.name}}.{{url.id}}/trang-{{maxPage}}" aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+						{{/if}}
+
+						{{#if isSearchPage}}
+						<nav aria-label="Page navigation">
+							<ul class="pagination">
+								<li>
+									<a href="/search={{url.name}}/trang-1" aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								{{# each page}}
+								<li><a href="/search={{../url.name}}/trang-{{this}}">{{this}}</a></li>
+								{{/each}}
+								<li>
+									<a href="/search={{url.name}}/trang-{{maxPage}}" aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+						{{/if}}
+					</div>
+				</section>
+			</div>
 		</div>
-	</div>
 	</div>
 	<script src="/js/jquery.js"></script>
 	<script>
 		var islogin = $('#islogin').val();
-		if (islogin === 'false') {
-			$('.islogin').attr('href', '../user/login');
+		if (islogin === 'false')
+		{
+			$('.islogin').attr('href', '/user/login');
 		}
 	</script>
 
