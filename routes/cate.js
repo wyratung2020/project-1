@@ -15,6 +15,7 @@ function bodauTV(str)
   str = str.replace(/đ/g, "d");
   str = str.replace(/ /g, "-");
   str = str.replace(/\./g, "-");
+  str = str.replace("/", "-");
   return str;
 }
 

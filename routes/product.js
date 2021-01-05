@@ -111,14 +111,14 @@ router.post('/:id/sua-product.html', upload.single('hinh'), function (req, res)
     {
         Product.findOne({ _id: req.params.id }, function (err, data)
         {
-            var file = './public/upload/' + data.imagePath;
+            /*var file = './public/upload/' + data.imagePath;
             var fs = require('fs');
             fs.unlink(file, function (e)
             {
                 if (e) throw e;
-            });
+            });*/
             data.title = req.body.name,
-                data.imagePath = req.file.filename,
+                //data.imagePath = req.file.filename || data.imagePath,
                 data.description = req.body.des,
                 data.price = req.body.gia,
                 data.cateId = req.body.cate
