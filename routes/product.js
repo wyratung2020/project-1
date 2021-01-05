@@ -21,10 +21,10 @@ var Cate = require('../models/cate.js');
 /* GET home page. */
 router.get('/', isLoggedIn, function (req, res)
 {
-    res.redirect('/admin/product/danh-sach.html', { layout: 'layout-admin' });
+    res.redirect('/admin/product/danh-sach', { layout: 'layout-admin' });
 });
 
-router.get('/danh-sach.html', isLoggedIn, function (req, res)
+router.get('/danh-sach', isLoggedIn, function (req, res)
 {
     Product.find().then(function (pro)
     {
@@ -36,14 +36,14 @@ router.get('/danh-sach.html', isLoggedIn, function (req, res)
 });
 
 //thêm sản phẩm
-router.get('/them-product.html', isLoggedIn, function (req, res)
+router.get('/them-product', isLoggedIn, function (req, res)
 {
     Cate.find().then(function (cate)
     {
         res.render('admin/product/them', { errors: null, cate: cate, layout: 'layout-admin' });
     });
 });
-router.post('/them-product.html', isLoggedIn, upload.single('hinh'), function (req, res)
+router.post('/them-product', isLoggedIn, upload.single('hinh'), function (req, res)
 {
     req.checkBody('name', 'Tên không được trống').notEmpty();
     req.checkBody('gia', 'giá phải là số').isInt();
@@ -70,13 +70,13 @@ router.post('/them-product.html', isLoggedIn, upload.single('hinh'), function (r
         pro.save().then(function ()
         {
             req.flash('succsess_msg', 'Đã Thêm Thành Công');
-            res.redirect('/admin/product/them-product.html',);
+            res.redirect('/admin/product/them-product',);
         });
     }
 });
 
 //Sửa sản phẩm
-router.get('/:id/sua-product.html', function (req, res)
+router.get('/:id/sua-product', function (req, res)
 {
     Product.findById(req.params.id).then(function (data)
     {
@@ -88,7 +88,7 @@ router.get('/:id/sua-product.html', function (req, res)
     });
 });
 
-router.post('/:id/sua-product.html', upload.single('hinh'), function (req, res)
+router.post('/:id/sua-product', upload.single('hinh'), function (req, res)
 {
     req.checkBody('name', 'Tên không được trống').notEmpty();
     req.checkBody('gia', 'giá phải là số').isInt();
@@ -125,13 +125,13 @@ router.post('/:id/sua-product.html', upload.single('hinh'), function (req, res)
 
             data.save();
             req.flash('succsess_msg', 'Đã Sửa Thành Công');
-            res.redirect('/admin/product/' + req.params.id + '/sua-product.html');
+            res.redirect('/admin/product/' + req.params.id + '/sua-product');
         });
     }
 });
 
 //xóa sản phẩm
-router.get('/:id/xoa-product.html', isLoggedIn, function (req, res)
+router.get('/:id/xoa-product', isLoggedIn, function (req, res)
 {
     Product.findById(req.params.id, function (err, data)
     {
@@ -144,11 +144,60 @@ router.get('/:id/xoa-product.html', isLoggedIn, function (req, res)
         data.remove(function ()
         {
             req.flash('succsess_msg', 'Đã Xoá Thành Công');
-            res.redirect('/admin/product/danh-sach.html');
+            res.redirect('/admin/product/danh-sach');
         })
     });
 
 });
+
+router.post('/search', function (req, res)
+{
+    var find = req.body.find;
+    res.redirect(`/admin/product/search=${find}/trang-1`);
+});
+
+router.get('/search=:input', (req, res) => 
+{
+    res.redirect(`/admin/product/search=${req.params.input}/trang-1`);
+})
+
+router.get('/search=:input/trang-:page', (req, res) =>
+{
+    let input = req.params.input;
+
+    Product.countDocuments({ title: { $regex: input, $options: 'i' } }, (err, count) =>
+    {
+        let curPage = req.params.page || 1;
+        let maxPage = Math.ceil(count / perPage);
+
+        if (count === 0)
+        {
+            return res.render('shop/san-pham', { notFound: true });
+        }
+        if (curPage > maxPage)
+        {
+            return res.redirect(`/search=${input}/trang-${maxPage}`);
+        }
+        else if (curPage < 1)
+        {
+            return res.redirect(`/search=${input}/trang-1`);
+        }
+
+        let listPage = getListPage(curPage, maxPage);
+
+        Product
+            .find({ title: { $regex: input, $options: 'i' } })
+            .skip((perPage * curPage) - perPage)
+            .limit(perPage)
+            .exec((err, products) =>
+            {
+                Cate.find().then((cate) =>
+                {
+                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isSearchPage: true, url: { name: input } });
+                })
+            });
+    });
+})
 
 module.exports = router;
 

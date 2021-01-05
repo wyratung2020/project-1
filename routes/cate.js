@@ -22,10 +22,10 @@ function bodauTV(str)
 
 router.get('/', isLoggedIn, function (req, res, next)
 {
-  res.redirect('/admin/cate/danh-sach.html', { layout: 'layout-admin' });
+  res.redirect('/admin/cate/danh-sach', { layout: 'layout-admin' });
 });
 
-router.get('/danh-sach.html', isLoggedIn, function (req, res, next)
+router.get('/danh-sach', isLoggedIn, function (req, res, next)
 {
   Cate.find().then(function (cate)
   {
@@ -33,12 +33,12 @@ router.get('/danh-sach.html', isLoggedIn, function (req, res, next)
   });
 });
 
-router.get('/them-cate.html', isLoggedIn, function (req, res, next)
+router.get('/them-cate', isLoggedIn, function (req, res, next)
 {
   res.render('admin/cate/them-cate', { layout: 'layout-admin' });
 });
 
-router.post('/them-cate.html', isLoggedIn, function (req, res, next)
+router.post('/them-cate', isLoggedIn, function (req, res, next)
 {
   var cate = new Cate({
     ten: req.body.name,
@@ -47,11 +47,11 @@ router.post('/them-cate.html', isLoggedIn, function (req, res, next)
   cate.save().then(function ()
   {
     req.flash('succsess_msg', 'Đã Thêm Thành Công');
-    res.redirect('/admin/cate/them-cate.html');
+    res.redirect('/admin/cate/them-cate');
   });
 });
 
-router.get('/:id/sua-cate.html', isLoggedIn, function (req, res, next)
+router.get('/:id/sua-cate', isLoggedIn, function (req, res, next)
 {
   Cate.findById(req.params.id, function (err, data)
   {
@@ -59,7 +59,7 @@ router.get('/:id/sua-cate.html', isLoggedIn, function (req, res, next)
   });
 });
 
-router.post('/:id/sua-cate.html', isLoggedIn, function (req, res, next)
+router.post('/:id/sua-cate', isLoggedIn, function (req, res, next)
 {
   Cate.findById(req.params.id, function (err, data)
   {
@@ -67,17 +67,17 @@ router.post('/:id/sua-cate.html', isLoggedIn, function (req, res, next)
     data.nameKhongDau = bodauTV(req.body.name);
     data.save();
     req.flash('succsess_msg', 'Đã Sửa Thành Công');
-    res.redirect('/admin/cate/' + req.params.id + '/sua-cate.html');
+    res.redirect('/admin/cate/' + req.params.id + '/sua-cate');
   });
 });
 
-router.get('/:id/xoa-cate.html', isLoggedIn, function (req, res, next)
+router.get('/:id/xoa-cate', isLoggedIn, function (req, res, next)
 {
 
   Cate.findById(req.params.id).remove(function ()
   {
     req.flash('succsess_msg', 'Đã Xoá Thành Công');
-    res.redirect('/admin/cate/danh-sach.html');
+    res.redirect('/admin/cate/danh-sach');
   });
 });
 

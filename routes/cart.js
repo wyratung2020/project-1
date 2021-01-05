@@ -7,10 +7,10 @@ var Cart = require('../models/cart.js');
 
 router.get('/', isLoggedIn, function (req, res, next)
 {
-    res.redirect('/admin/cart/danh-sach.html', { layout: 'layout-admin' });
+    res.redirect('/admin/cart/danh-sach', { layout: 'layout-admin' });
 });
 
-router.get('/danh-sach-cho-giao.html', isLoggedIn, function (req, res, next)
+router.get('/danh-sach-cho-giao', isLoggedIn, function (req, res, next)
 {
     giohang.find({ st: 0 }).then(function (data)
     {
@@ -19,7 +19,7 @@ router.get('/danh-sach-cho-giao.html', isLoggedIn, function (req, res, next)
 
 });
 
-router.get('/danh-sach-da-giao.html', isLoggedIn, function (req, res, next)
+router.get('/danh-sach-da-giao', isLoggedIn, function (req, res, next)
 {
     giohang.find({ st: 1 }).then(function (data)
     {
@@ -28,7 +28,7 @@ router.get('/danh-sach-da-giao.html', isLoggedIn, function (req, res, next)
 
 });
 
-router.get('/:id/xem-cart.html', isLoggedIn, function (req, res, next)
+router.get('/:id/xem-cart', isLoggedIn, function (req, res, next)
 {
     var id = req.params.id;
     giohang.findById(id).then(function (dl)
@@ -37,7 +37,7 @@ router.get('/:id/xem-cart.html', isLoggedIn, function (req, res, next)
     });
 });
 
-router.get('/:id/thanh-toan-cart.html', isLoggedIn, function (req, res, next)
+router.get('/:id/thanh-toan-cart', isLoggedIn, function (req, res, next)
 {
     var id = req.params.id;
     giohang.findById(id, function (err, data)
@@ -45,18 +45,18 @@ router.get('/:id/thanh-toan-cart.html', isLoggedIn, function (req, res, next)
         data.st = 1;
         data.save();
         req.flash('succsess_msg', 'Đã Thanh Toán');
-        res.redirect('/admin/cart/' + id + '/xem-cart.html');
+        res.redirect('/admin/cart/' + id + '/xem-cart');
     });
 });
 
 
-router.get('/:id/xoa-cart.html', isLoggedIn, function (req, res, next)
+router.get('/:id/xoa-cart', isLoggedIn, function (req, res, next)
 {
     var id = req.params.id;
     giohang.findOneAndRemove({ _id: id }, function (err, offer)
     {
         req.flash('succsess_msg', 'Đã Xoá Thành Công');
-        res.redirect('/admin/cart/danh-sach.html');
+        res.redirect('/admin/cart/danh-sach');
     });
 });
 
