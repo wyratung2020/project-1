@@ -16,7 +16,7 @@
 					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
 						<ul class="nav navbar-nav menu_nav ml-auto">
 							<li class="nav-item "><a class="nav-link" href="/">Trang chủ</a></li>
-							<li class="nav-item "><a class="nav-link" href="../san-pham">Sản phẩm</a></li>
+							<li class="nav-item "><a class="nav-link" href="/san-pham">Sản phẩm</a></li>
 							{{#if login}}
 							<li class="nav-item submenu dropdown">
 								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
@@ -36,7 +36,7 @@
 							</li>
 
 							{{else}}
-							<li class="nav-item"><a class="nav-link" href="../user/login">Đăng nhập</a></li>
+							<li class="nav-item"><a class="nav-link" href="/user/login">Đăng nhập</a></li>
 							{{/if}}
 						</ul>
 						<ul class="nav navbar-nav navbar-right">
@@ -44,7 +44,7 @@
 							<li class="nav-item"><a href="/gio-hang/" class="cart"><span
 										class="ti-bag">{{session.cart.SoLuong}}</span></a></li>
 							{{else}}
-							<li class="nav-item"><a href="../user/login" class="cart"><span
+							<li class="nav-item"><a href="/user/login" class="cart"><span
 										class="ti-bag">{{session.cart.SoLuong}}</span></a></li>
 							{{/if}}
 							<li class="nav-item">
