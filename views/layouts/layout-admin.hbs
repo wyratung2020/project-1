@@ -61,7 +61,7 @@
                         <ul class="dropdown-menu profile animated fadeIn">
                             {{# if login}}
                             <li class="last">
-                                <a href="../logout">
+                                <a href="/admin/logout">
                                     <i class="fa fa-lock"></i>
                                     Đăng xuất
                                 </a>
@@ -206,6 +206,31 @@
             $(this).find('td').eq(0).html(i)
             i++;
         });
+
+        function numberWithCommas(x)
+        {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        $("#totalValue h4").each(function ()
+        {
+            $(this).find('strong').html(numberWithCommas({{ productInfo.totalValue }}) + 'VND')
+        })
+
+        $("#totalProduct h4").each(function ()
+        {
+            $(this).find('strong').html(numberWithCommas({{ productInfo.totalProduct }}))
+        })
+
+        $("#totalIncome h4").each(function ()
+        {
+            $(this).find('strong').html(numberWithCommas({{ giohangInfo.totalIncome }}) + 'VND')
+        })
+
+        $("#totalIncomeMonth h4").each(function ()
+        {
+            $(this).find('strong').html(numberWithCommas({{ giohangInfoMonth.totalIncomeMonth }}) + 'VND')
+        })
     </script>
 </body>
 

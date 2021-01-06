@@ -78,18 +78,24 @@
                                 <tr>
                                     <td colspan="5">
                                         {{#if pro.st}}
-                                        <span>Đã Thanh Toán</span>
+                                        <span>Đơn vị vận chuyển đã giao hàng và thu hộ tiền</span>
 
                                         {{else}}
-                                        <a href="/admin/cart/{{pro._id}}/thanh-toan-cart">Thanh Toán</a>
-                                        {{/if}} |
-                                        <a href="/admin/cart/{{pro._id}}/xoa-cart">Xoá</a>
+                                        <a href="/admin/cart/{{pro._id}}/thanh-toan-cart">Xác nhận đã giao hàng và nhận
+                                            tiền thu hộ</a>
+                                        {{/if}}
+                                        |
+                                        {{#if pro.danhan}}
+                                        <span>Người mua đã nhận hàng và thanh toán</span>
+                                        {{else}}
+                                        <span>Người mua chưa xác nhận đã nhận hàng</span>
+                                        {{/if}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="5">
                                         {{# pro}}
-                                        <p><strong style="color:red">Tồng Tiền: </strong>{{this.Tien}}VND</p>
+                                        <p><strong style="color:red">Tổng số tiền: </strong>{{this.Tien}}VND</p>
                                         {{/pro}}
                                     </td>
                                 </tr>

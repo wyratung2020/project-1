@@ -14,9 +14,10 @@
                     <header class="panel_header">
                         <h2 class="title pull-left">Tất cả người dùng</h2>
                         <div class="actions panel_actions pull-right">
-                            <a class="box_toggle fa fa-chevron-down"></a>
-                            <a class="box_setting fa fa-cog" data-toggle="modal" href="#section-settings"></a>
-                            <a class="box_close fa fa-times"></a>
+                            <form action="/admin/user/search" method="POST" class="d-flex justify-content-between">
+                                <input type="text" class="form-control" id="find" name="find"
+                                    placeholder="Tìm bằng ID hoặc email">
+                            </form>
                         </div>
                     </header>
                     <div class="content-body">
@@ -35,20 +36,22 @@
                                         <tr>
                                             <th>STT</th>
                                             <th>Email</th>
-                                            <th></th>
+                                            <th>ID</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {{#if notFound}}
+                                        <strong>Không tìm thấy người dùng</strong>
+                                        {{/if}}
                                         {{# each us}}
                                         <tr>
 
                                             <td>1</td>
                                             <td>{{this.email}}</td>
                                             <td>
-
+                                                {{this._id}}
                                             </td>
-
                                             <td>
                                                 <a href="/admin/user/{{this._id}}/sua-user">Sửa</a> |
                                                 <a href="/admin/user/{{this._id}}/xoa-user">Xóa</a>
@@ -59,6 +62,47 @@
                                 </table>
                                 <!-- ********************************************** -->
                             </div>
+                        </div>
+                        <div class="row">
+                            {{#if isSPPage}}
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="/admin/user/danh-sach/trang-1" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {{#each page}}
+                                    <li><a href="/admin/user/danh-sach/trang-{{this}}">{{this}}</a></li>
+                                    {{/each}}
+                                    <li>
+                                        <a href="/admin/user/danh-sach/trang-{{maxPage}}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            {{/if}}
+
+                            {{#if isSearchPage}}
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="/admin/user/search={{url.name}}/trang-1" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {{# each page}}
+                                    <li><a href="/admin/user/search={{../url.name}}/trang-{{this}}">{{this}}</a></li>
+                                    {{/each}}
+                                    <li>
+                                        <a href="/admin/user/search={{url.name}}/trang-{{maxPage}}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            {{/if}}
                         </div>
                     </div>
                 </section>
