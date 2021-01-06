@@ -224,10 +224,7 @@ router.get('/search=:input/trang-:page', (req, res) =>
                     .limit(perPage)
                     .exec((err, products) =>
                     {
-                        Cate.find().then((cate) =>
-                        {
-                            res.render('admin/product/danh-sach', { layout: 'layout-admin', product: products, curPage: curPage, page: listPage, maxPage: maxPage, isSearchPage: true, url: { name: input } });
-                        })
+                        res.render('admin/product/danh-sach', { layout: 'layout-admin', product: products, curPage: curPage, page: listPage, maxPage: maxPage, isSearchPage: true, url: { name: input } });
                     });
             });
         }
@@ -237,51 +234,6 @@ router.get('/search=:input/trang-:page', (req, res) =>
             res.render('admin/product/danh-sach', { layout: 'layout-admin', product: products });
         }
     })
-
-    /*Product.countDocuments({ title: { $regex: input, $options: 'i' } }, (err, titleCount) =>
-    {
-        let curPage = req.params.page || 1;
-        let maxPage = Math.ceil(titleCount / perPage);
-
-        if (titleCount === 0)
-        {
-            Product.countDocuments({ _id: input }, (err, idCount) => 
-            {
-                console.log(idCount);
-                if (idCount === 0)
-                {
-                    console.log(1);
-                    return res.render('admin/product/danh-sach', { layout: 'layout-admin', notFound: true });
-                }
-
-
-
-            })
-
-        }
-        if (curPage > maxPage)
-        {
-            return res.redirect(`/admin/product/search=${input}/trang-${maxPage}`);
-        }
-        else if (curPage < 1)
-        {
-            return res.redirect(`/admin/product/search=${input}/trang-1`);
-        }
-
-        let listPage = getListPage(curPage, maxPage);
-
-        Product
-            .find({ title: { $regex: input, $options: 'i' } })
-            .skip((perPage * curPage) - perPage)
-            .limit(perPage)
-            .exec((err, products) =>
-            {
-                Cate.find().then((cate) =>
-                {
-                    res.render('shop/san-pham', { product: products, cate: cate, page: listPage, maxPage: maxPage, isSearchPage: true, url: { name: input } });
-                })
-            });
-    });*/
 })
 
 module.exports = router;
