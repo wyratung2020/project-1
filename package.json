@@ -12,6 +12,7 @@
     "connect-mongo": "^2.0.3",
     "cookie-parser": "~1.4.3",
     "csurf": "^1.10.0",
+    "dayjs": "^1.10.2",
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "express-handlebars": "^3.0.2",
