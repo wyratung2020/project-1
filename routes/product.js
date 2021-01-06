@@ -151,7 +151,8 @@ router.post('/:id/sua-product', upload.single('hinh'), function (req, res)
                 //data.imagePath = req.file.filename || data.imagePath,
                 data.description = req.body.des,
                 data.price = req.body.gia,
-                data.cateId = req.body.cate
+                data.cateId = req.body.cate,
+                data.sl = req.body.sl
 
             data.save();
             req.flash('succsess_msg', 'Đã Sửa Thành Công');
@@ -165,12 +166,12 @@ router.get('/:id/xoa-product', isLoggedIn, function (req, res)
 {
     Product.findById(req.params.id, function (err, data)
     {
-        var file = './public/upload/' + data.imagePath;
+        /**var file = './public' + data.imagePath;
         var fs = require('fs');
         fs.unlink(file, function (e)
         {
             if (e) throw e;
-        });
+        });*/
         data.remove(function ()
         {
             req.flash('succsess_msg', 'Đã Xoá Thành Công');

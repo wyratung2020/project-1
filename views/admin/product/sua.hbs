@@ -39,6 +39,16 @@
                         <form action="./sua-product" method="post" enctype="multipart/form-data">
                             <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
                                 <div class="form-group">
+                                    <label class="form-label" for="field-120334">ID sản phẩm</label>
+                                    <span class="desc"></span>
+                                    <div class="controls">
+                                        <input type="text" id="name" value="{{product._id}}" class="form-control"
+                                            name="name" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
+                                <div class="form-group">
                                     <label class="form-label" for="field-120334">Tên sản phẩm</label>
                                     <span class="desc"></span>
                                     <div class="controls">
@@ -64,6 +74,16 @@
                                     <div class="controls">
                                         <input type="number" id="gia" value="{{product.price}}" min="0"
                                             class="form-control" name="gia">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-9 col-md-8 padding-bottom-30">
+                                <div class="form-group">
+                                    <label class="form-label" for="field-120334">Số lượng</label>
+                                    <span class="desc"></span>
+                                    <div class="controls">
+                                        <input type="number" id="sl" value="{{product.sl}}" min="0" class="form-control"
+                                            name="sl">
                                     </div>
                                 </div>
                             </div>
