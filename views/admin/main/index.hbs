@@ -18,10 +18,10 @@
                     <div class="row">
                         <div class="col-md-3 col-sm-6 col-xs-12">
                             <div class="r4_counter db_box">
-                                <i class='pull-left fa fa-thumbs-up icon-md icon-rounded icon-primary'></i>
+                                <i class='pull-left fa fa-cube icon-md icon-rounded icon-primary'></i>
                                 <div class="stats">
-                                    <h4><strong>45%</strong></h4>
-                                    <span>Đơn hàng mới</span>
+                                    <h4><strong>{{cateInfo.totalCate}}</strong></h4>
+                                    <span>Danh mục, ngành hàng</span>
                                 </div>
                             </div>
                         </div>
@@ -29,17 +29,35 @@
                             <div class="r4_counter db_box">
                                 <i class='pull-left fa fa-shopping-cart icon-md icon-rounded icon-accent'></i>
                                 <div class="stats">
-                                    <h4><strong>243</strong></h4>
-                                    <span>Sản phẩm mới</span>
+                                    <h4><strong>{{productInfo.totalProductType}}</strong></h4>
+                                    <span>Loại sản phẩm, mặt hàng</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-cubes icon-md icon-rounded icon-accent'></i>
+                                <div class="stats" id="totalProduct">
+                                    <h4><strong>{{productInfo.totalProduct}}</strong></h4>
+                                    <span>Tổng số sản phẩm</span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6 col-xs-12">
                             <div class="r4_counter db_box">
                                 <i class='pull-left fa fa-dollar icon-md icon-rounded icon-purple'></i>
-                                <div class="stats">
-                                    <h4><strong>$3424</strong></h4>
-                                    <span>Doanh thu </span>
+                                <div class="stats" id="totalValue">
+                                    <h4><strong>{{productInfo.totalValue}}VND</strong></h4>
+                                    <span>Tổng giá trị sản phẩm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-dollar icon-md icon-rounded icon-purple'></i>
+                                <div class="stats" id="totalIncome">
+                                    <h4><strong>{{giohangInfo.totalIncome}}</strong></h4>
+                                    <span>Tổng doanh thu</span>
                                 </div>
                             </div>
                         </div>
@@ -47,8 +65,45 @@
                             <div class="r4_counter db_box">
                                 <i class='pull-left fa fa-users icon-md icon-rounded icon-warning'></i>
                                 <div class="stats">
-                                    <h4><strong>1433</strong></h4>
-                                    <span>Người dùng mới</span>
+                                    <h4><strong>{{totalUser}}</strong></h4>
+                                    <span>Tổng số người dùng</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-truck icon-md icon-rounded icon-primary'></i>
+                                <div class="stats">
+                                    <h4><strong>{{giohangInfo.totalOrder}}</strong></h4>
+                                    <span>Tổng số đơn hàng</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-thumbs-up icon-md icon-rounded icon-primary'></i>
+                                <div class="stats">
+                                    <h4><strong>{{giohangInfo.totalOrderSuccess}}</strong></h4>
+                                    <span>Số đơn hàng đã giao</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-paper-plane icon-md icon-rounded icon-primary'></i>
+                                <div class="stats">
+                                    <h4><strong>{{giohangInfo.totalOrderWaiting}}</strong></h4>
+                                    <span>Số đơn hàng chờ giao</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-cubes icon-md icon-rounded icon-accent'></i>
+                                <div class="stats">
+                                    <h4><strong>{{giohangInfo.totalProductSold}}</strong></h4>
+                                    <span>Tổng sản phẩm đã bán</span>
                                 </div>
                             </div>
                         </div>
@@ -57,6 +112,64 @@
                 </div>
             </section>
         </div>
+
+        <div class='col-xs-12'>
+            <div class="page-title">
+                <div class="pull-left">
+                    <h1 class="title">Trong tháng qua (từ {{dateInfo.firstDayOfMonth}} đến {{dateInfo.now}})</h1>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <section class="box nobox marginBottom0">
+                <div class="content-body">
+                    <div class="row">
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-cubes icon-md icon-rounded icon-accent'></i>
+                                <div class="stats">
+                                    <h4><strong>{{giohangInfoMonth.totalProductSoldMonth}}</strong></h4>
+                                    <span>Số sản phẩm đã bán</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-dollar icon-md icon-rounded icon-purple'></i>
+                                <div class="stats" id="totalIncomeMonth">
+                                    <h4><strong>{{giohangInfoMonth.totalIncomeMonth}}</strong></h4>
+                                    <span>Doanh thu tháng</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-users icon-md icon-rounded icon-warning'></i>
+                                <div class="stats">
+                                    <h4><strong>{{userInfoMonth.totalUserMonth}}</strong></h4>
+                                    <span>Người dùng mới</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="r4_counter db_box">
+                                <i class='pull-left fa fa-truck icon-md icon-rounded icon-primary'></i>
+                                <div class="stats">
+                                    <h4><strong>{{giohangInfoMonth.totalOrderSuccessMonth}}</strong></h4>
+                                    <span>Đơn hàng mới đã giao</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End .row -->
+                </div>
+            </section>
+        </div>
+
+        <!--
         <div class="col-xs-12">
             <section class="box ">
                 <header class="panel_header">
@@ -68,15 +181,55 @@
                     </div>
                 </header>
                 <div class="content-body">
+
+
+
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="wid-vectormap">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-9">
-                                        <figure>
-                                            <div id="db-world-map-markers" style="width: 100%; height: 300px">
+                                        <div class="row">
+                                            {{#if succsess_msg }}
+
+                                            <div class="alert alert-info">
+                                                <p>{{succsess_msg}}</p>
                                             </div>
-                                        </figure>
+
+                                            {{/if}}
+                                            <div class="col-xs-12">
+                                                <table id="" class="display table table-hover table-condensed">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Tháng</th>
+                                                            <th>Năm</th>
+                                                            <th>Doanh thu</th>
+                                                            <th>Số đơn hàng</th>
+                                                            <th>Số sản phẩm</th>
+                                                            <th>Tăng trưởng so với tháng trước</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {{# each data}}
+                                                        <tr>
+
+                                                            <td>1</td>
+                                                            <td>{{this._id}}</td>
+                                                            <td>{{this.nguoidat}}</td>
+                                                            <td>{{this.firstname}} {{this.lastname}}</td>
+                                                            <td>
+                                                                {{this.Tien}} VND
+                                                            </td>
+
+                                                            <td>
+                                                                <a href="/admin/cart/{{this._id}}/xem-cart">Xem</a>
+                                                            </td>
+                                                        </tr>
+                                                        {{/each}}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="map_progress col-xs-12 col-sm-3">
                                         <h4>Lượng người dùng truy cập</h4>
@@ -108,10 +261,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End .row -->
                 </div>
             </section>
         </div>
+    -->
     </section>
 </section>
 <!-- END Thống kê -->
