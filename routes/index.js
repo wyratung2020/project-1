@@ -223,6 +223,18 @@ router.post('/thanh-toan', function (req, res)
     var data = giohang.convertArray();
     var Tong = giohang.Tien;
 
+    let tongSoLuong = 0;
+    for (const [id, value] of Object.entries(giohang.items))
+    {
+        tongSoLuong += value.sl;
+        Product.findById(id, (err, result) =>
+        {
+
+            result.sl -= value.sl;
+            result.save();
+        });
+    }
+
     var cart = new Giohang({
         firstname: req.body.ho,
         lastname: req.body.ten,
@@ -232,18 +244,12 @@ router.post('/thanh-toan', function (req, res)
         thanhpho: req.body.city,
         cart: data,
         st: 0,
+        danhan: 0,
         Tien: Tong,
-        nguoidat: req.session.passport.user
+        nguoidat: req.session.passport.user,
+        ngaydat: Date.now(),
+        tongSoLuong: tongSoLuong
     });
-
-    for (const [id, value] of Object.entries(giohang.items))
-    {
-        Product.findById(id, async (err, result) =>
-        {
-            result.sl -= value.sl;
-            await result.save();
-        });
-    }
 
     cart.save().then(function ()
     {

@@ -37,7 +37,7 @@
                                             <th>Mã đơn hàng</th>
                                             <th>Mã người đặt</th>
                                             <th>Tên</th>
-                                            <th></th>
+                                            <th>Giá tiền</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
@@ -50,12 +50,11 @@
                                             <td>{{this.nguoidat}}</td>
                                             <td>{{this.firstname}} {{this.lastname}}</td>
                                             <td>
-
+                                                {{this.Tien}} VND
                                             </td>
 
                                             <td>
-                                                <a href="/admin/cart/{{this._id}}/xem-cart">Xem</a> |
-                                                <a href="/admin/cart/{{this._id}}/xoa-cart">Xóa</a>
+                                                <a href="/admin/cart/{{this._id}}/xem-cart">Xem</a>
                                             </td>
                                         </tr>
                                         {{/each}}
